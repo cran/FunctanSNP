@@ -1,0 +1,57 @@
+##' @title Extract coefficients from an SNPlm or SNPinter object
+##'
+##' @description This functions predicts coefficients and related coefficient functions from a fitted "SNPlm" or "SNPinter" object.
+##'
+##' @param x an "SNPlm"/"SNPinter" object obtained by \code{\link{SNPlm}}/\code{\link{SNPinter}}.
+##'
+##' @return An "coef.SNPreg" object that contains the list of the following items.
+##' \itemize{
+##' \item{alpha:}{ estimated intercept value.}
+##' \item{gamma:}{ estimated coefficients of the scalar covariates.}
+##' \item{b:}{ estimated coefficients of the chosen basis functions for the genetic effect function beta(t) (and interaction items betak(t), if x is an "SNPinter" object).}
+##' \item{betat:}{ an "fd" object, representing the estimated genetic effect function beta(t).}
+##' }
+##'
+##' @seealso See Also as \code{\link{SNPlm}}, \code{\link{SNPinter}}.
+##'
+##' @export
+##' @examples
+##' library(FunctanSNP)
+##' n <- 300
+##' m <- 30
+##' simdata1 <- simData1(n, m, seed = 123)
+##' SNPlmres <- SNPlm(y = simdata1$y, z = simdata1$z,
+##'                   location = simdata1$location, X = simdata1$X,
+##'                   type1 = "Bspline", type2 = "Bspline", nbasis1 = 5,
+##'                   nbasis2 = 5, params1 = 4, params2 = 4,
+##'                   intercept = FALSE, Plot = FALSE)
+##' coef1 <- coefSNPreg(x = SNPlmres)
+##' coef1$alpha ###intercept
+##' coef1$gamma ###coefficients of scalar variables
+##' coef1$b     ###coefficients of basis functions
+##'
+##' simdata2 <- simData2(n, m, seed = 123)
+##' lambda1 <- 0.05
+##' lambda2 <- sqrt(3)*lambda1
+##' eta <- 0
+##' SNPinterres <- SNPinter(y = simdata2$y, z = simdata2$z,
+##'                         location = simdata2$location, X = simdata2$X,
+##'                         lambda1, lambda2, eta, type1 = "Bspline", nbasis1 = 5,
+##'                         params1 = 4, Bsplines = 5, norder = 4, intercept = TRUE,
+##'                         eps = 1e-2, maxstep = 1e2, Plot = FALSE)
+##' coef2 <- coefSNPreg(x = SNPinterres)
+##' coef2$alpha ###intercept
+##' coef2$gamma ###coefficients of scalar variables
+##' coef2$b     ###coefficients of basis functions
+##'
+
+coefSNPreg <- function(x){
+  #x <- SNPinterres
+  alpha <- x$alpha
+  gamma <- x$gamma
+  b <- x$b
+  betat <- x$betat
+  result <- list(alpha = alpha, gamma = gamma, b = b, betat = betat)
+  class(result) <- "coef.SNPreg"
+  return(result)
+}
